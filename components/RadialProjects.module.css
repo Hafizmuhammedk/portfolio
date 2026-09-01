@@ -1,0 +1,515 @@
+/* ============================================================
+   RadialProjects — Scroll-driven radial carousel
+   ============================================================ */
+
+.section {
+  height: calc(var(--project-count, 3) * 100vh);
+  position: relative;
+}
+
+.viewport {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  will-change: transform; /* GPU layer for pinning */
+}
+
+.workScene {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+}
+
+/* --- Header --- */
+.header {
+  position: absolute;
+  top: calc(var(--nav-height) + 24px);
+  left: var(--margin-desktop);
+  right: var(--margin-desktop);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: none;
+  margin: 0;
+  z-index: 10;
+}
+
+.label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.counter {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: opacity 0.3s ease;
+}
+
+/* --- Radial Container --- */
+.radialContainer {
+  position: absolute;
+  top: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+}
+
+.orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 700px;
+  height: 700px;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+  /* NO CSS transition — controlled entirely by JS in sync with scroll */
+}
+
+.orbitSvg {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Project Nodes --- */
+.node {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background-color: var(--bg-primary);
+  z-index: 5;
+  will-change: transform, opacity;
+  margin-left: -20px;
+  margin-top: -20px;
+  padding: 0;
+  line-height: 1;
+  /* Smooth border-color transitions but NOT transform/opacity — those are JS-driven */
+  transition: border-color 0.3s ease;
+}
+
+.nodeActive {
+  border-color: var(--text-primary);
+}
+
+.nodeNumber {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+.nodeActive .nodeNumber {
+  color: var(--text-primary);
+}
+
+/* --- Project Info (Fixed, smoothly crossfades between stacked layers) --- */
+.projectInfoStage {
+  position: absolute;
+  top: 50%;
+  left: calc(30% - 220px);
+  transform: translateY(-50%);
+  width: 420px;
+  height: 430px;
+  z-index: 20;
+}
+
+.projectInfo {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.projectInfoContent {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.projectInfo:first-child {
+  opacity: 1;
+}
+
+.projectLabel {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 16px;
+  transition: color 0.32s ease;
+}
+
+.projectTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.projectDesc {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  transition: color 0.32s ease;
+}
+
+.projectTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.techTag {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  transition:
+    border-color 0.32s ease,
+    color 0.32s ease;
+}
+
+.projectCta {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 28px;
+  border: 1px solid var(--border-dark);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.32s ease,
+    color 0.32s ease;
+}
+
+.projectCtaUnavailable {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+/* --- Project Image (Fixed, smoothly crossfades between stacked layers) --- */
+.projectImageStage {
+  position: absolute;
+  top: 50%;
+  right: var(--margin-desktop);
+  transform: translateY(-50%);
+  width: 45%;
+  max-width: 560px;
+  aspect-ratio: 16 / 10;
+  z-index: 15;
+}
+
+.projectImageWrap {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform-origin: center;
+  clip-path: inset(0% 0% 0% 0%);
+  will-change: transform, opacity, clip-path;
+  overflow: hidden;
+}
+
+.projectImageWrap::after,
+.mobileImageWrap::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: -1px;
+  opacity: 0.78;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to right,
+      var(--bg-primary) 0%,
+      transparent 5%,
+      transparent 95%,
+      var(--bg-primary) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      var(--bg-primary) 0%,
+      transparent 6%,
+      transparent 94%,
+      var(--bg-primary) 100%
+    );
+}
+
+.projectImageWrap:first-child {
+  opacity: 1;
+}
+
+.projectImage {
+  width: 100%;
+  height: 100%;
+  display: block;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  transform: scale(1);
+  transform-origin: center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* --- Mobile --- */
+.mobileSection {
+  display: none;
+  padding: 80px 0;
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--margin-mobile);
+}
+
+.sectionHeader {
+  margin-bottom: 48px;
+}
+
+.mobileProject {
+  border-top: 1px solid var(--border);
+  padding: 40px 0;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mobileNumber {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 12px;
+  transition: color 0.32s ease;
+}
+
+.mobileTitle {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.mobileImageWrap {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.mobileImage {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  transform: scale(1);
+  transform-origin: center;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mobileDesc {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  transition: color 0.32s ease;
+}
+
+.mobileTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.mobileLink {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 12px 24px;
+  border: 1px solid var(--border-dark);
+  display: inline-block;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.32s ease,
+    color 0.32s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .projectInfo:hover .projectInfoContent {
+    transform: translate3d(0, -3px, 0);
+  }
+
+  .projectInfo:hover .projectLabel,
+  .projectInfo:hover .projectDesc {
+    color: #5f5f5f;
+  }
+
+  .projectInfo:hover .techTag {
+    border-color: #d2d2d2;
+    color: #5f5f5f;
+  }
+
+  .projectImageStage:hover .projectImage,
+  .mobileProject:hover .mobileImage {
+    transform: scale(1.02);
+  }
+
+  .projectCta:not(.projectCtaUnavailable):hover,
+  .mobileLink:not(.projectCtaUnavailable):hover {
+    transform: translate3d(0, -1px, 0);
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+  }
+
+  .mobileProject:hover {
+    transform: translate3d(0, -4px, 0);
+  }
+
+  .mobileProject:hover .mobileNumber,
+  .mobileProject:hover .mobileDesc {
+    color: #5f5f5f;
+  }
+}
+
+.projectCta:active,
+.mobileLink:active {
+  transform: translate3d(0, 0, 0);
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .section {
+    display: none;
+  }
+
+  .mobileSection {
+    display: block;
+  }
+
+  .projectInfoContent,
+  .projectImage,
+  .mobileProject,
+  .mobileImage,
+  .projectCta,
+  .mobileLink {
+    transition: none;
+  }
+
+  .projectInfo:hover .projectInfoContent,
+  .projectImageStage:hover .projectImage,
+  .mobileProject:hover,
+  .mobileProject:hover .mobileImage,
+  .projectCta:not(.projectCtaUnavailable):hover,
+  .mobileLink:not(.projectCtaUnavailable):hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 1200px) {
+  .radialContainer {
+    width: 550px;
+    height: 550px;
+    left: 25%;
+  }
+
+  .orbit {
+    width: 550px;
+    height: 550px;
+  }
+
+  .projectInfoStage {
+    left: calc(25% - 190px);
+    width: 340px;
+  }
+
+  .projectImageStage {
+    width: 40%;
+  }
+}
+
+@media (max-width: 1100px) and (min-width: 769px) {
+  .radialContainer,
+  .orbit {
+    width: 500px;
+    height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    display: none;
+    height: auto;
+  }
+
+  .mobileSection {
+    display: block;
+  }
+
+  .viewport {
+    height: auto;
+    min-height: 100vh;
+  }
+}
+
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+  .viewport {
+    min-height: auto;
+  }
+}

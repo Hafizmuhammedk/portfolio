@@ -1,0 +1,540 @@
+.visualPosition {
+  position: absolute;
+  top: 50%;
+  right: var(--margin-desktop);
+  width: min(35.5vw, 610px);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.orbitSystem {
+  opacity: 1;
+}
+
+.heroOrbit {
+  fill: none;
+  stroke: #e4e4e4;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transform: rotate(-90deg);
+  transform-origin: 430px 340px;
+  animation:
+    orbitDraw 1.05s cubic-bezier(0.45, 0, 0.2, 1) 0.14s forwards,
+    orbitDrift 28s linear 2.4s infinite;
+}
+
+.orbitProjectMarker {
+  opacity: 0;
+  animation: orbitMarkerReveal 0.4s ease-out 1.02s forwards;
+}
+
+.orbitProjectMarker circle {
+  fill: var(--bg-primary);
+  stroke: #888888;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.orbitProjectMarker text {
+  fill: #666666;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.visualMotion,
+.diagramParallax {
+  position: absolute;
+  inset: 0;
+}
+
+.visualMotion,
+.diagramParallax,
+.terminalParallax {
+  will-change: transform, opacity;
+}
+
+.systemSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.gridLines {
+  opacity: 0;
+  animation: gridReveal 0.35s ease-out 0.02s forwards;
+}
+
+.gridLines line,
+.crosshair {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+
+.gridLines line {
+  opacity: 0.22;
+}
+
+.gridLines .axisLine {
+  opacity: 0.32;
+  stroke-width: 1;
+}
+
+.crosshair {
+  opacity: 0.36;
+}
+
+.flowPath {
+  fill: none;
+  stroke: #cfcfcf;
+  stroke-width: 1.15;
+  stroke-linecap: square;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawPath 1.1s cubic-bezier(0.45, 0, 0.2, 1) var(--draw-delay) forwards;
+}
+
+.flowPaths {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: flowFieldBreath 8s ease-in-out 2.2s infinite alternate;
+}
+
+.flowPath:nth-child(3n) {
+  stroke: var(--text-secondary);
+  stroke-width: 0.9;
+  opacity: 0.72;
+}
+
+.systemNode,
+.dataDot {
+  fill: var(--text-primary);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nodeReveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) var(--node-delay) forwards;
+}
+
+.systemNodes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nodeFieldDrift 7s ease-in-out 2.25s infinite alternate;
+}
+
+.systemNode:nth-child(3n) {
+  fill: var(--text-secondary);
+}
+
+.dataDot {
+  fill: var(--text-secondary);
+  animation-name: dataDotReveal;
+}
+
+.technicalLabels {
+  position: absolute;
+  inset: 0;
+}
+
+.techLabel,
+.marker {
+  position: absolute;
+  opacity: 0;
+  transform: translate3d(0, 6px, 0);
+  animation: annotationReveal 0.45s cubic-bezier(0.22, 1, 0.36, 1) var(--label-delay) forwards;
+}
+
+.techLabel {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.62rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.16em;
+  color: #606060;
+  white-space: nowrap;
+}
+
+.labelRealtime {
+  top: 47%;
+  left: 13%;
+}
+
+.labelVoice {
+  bottom: 15%;
+  left: 18%;
+}
+
+.labelAi {
+  right: 25%;
+  bottom: 15%;
+}
+
+.labelData {
+  top: 8%;
+  left: 42%;
+}
+
+.marker {
+  width: 5px;
+  height: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--text-primary);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.markerOne {
+  top: 18%;
+  left: 50%;
+}
+
+.markerTwo {
+  top: 50%;
+  left: 8%;
+}
+
+.markerThree {
+  bottom: 15%;
+  left: 63%;
+}
+
+.terminalAnchor {
+  position: absolute;
+  top: 50%;
+  left: 63.235%;
+  width: 88px;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+
+.terminal {
+  width: 100%;
+  min-height: 66px;
+  border: 1px solid var(--text-primary);
+  background: var(--bg-dark);
+  color: #f5f5f5;
+  opacity: 0;
+  transform: scale(0.96);
+  transform-origin: center;
+  box-shadow: 5px 6px 0 rgba(34, 34, 34, 0.06);
+  animation: terminalReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.4s forwards;
+}
+
+.terminalHeader {
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px;
+  border-bottom: 1px solid #4f4f4f;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.34rem;
+  letter-spacing: 0.06em;
+  color: #a6a6a6;
+}
+
+.terminalPrompt {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 8px 7px 3px;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.cursor {
+  animation: cursorBlink 1s steps(1, end) 1.9s infinite;
+}
+
+.terminalStatus {
+  display: block;
+  padding: 0 7px 7px;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.34rem;
+  letter-spacing: 0.12em;
+  color: #888888;
+}
+
+.terminalCorner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  opacity: 0;
+  animation: annotationReveal 0.4s ease-out 1.72s forwards;
+}
+
+.cornerTopLeft {
+  top: -7px;
+  left: -7px;
+  border-top: 1px solid var(--text-primary);
+  border-left: 1px solid var(--text-primary);
+}
+
+.cornerTopRight {
+  top: -7px;
+  right: -7px;
+  border-top: 1px solid var(--text-primary);
+  border-right: 1px solid var(--text-primary);
+}
+
+.cornerBottomLeft {
+  bottom: -7px;
+  left: -7px;
+  border-bottom: 1px solid var(--text-primary);
+  border-left: 1px solid var(--text-primary);
+}
+
+.cornerBottomRight {
+  right: -7px;
+  bottom: -7px;
+  border-right: 1px solid var(--text-primary);
+  border-bottom: 1px solid var(--text-primary);
+}
+
+@keyframes gridReveal {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes orbitDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes orbitDrift {
+  to {
+    transform: rotate(270deg);
+  }
+}
+
+@keyframes orbitMarkerReveal {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes drawPath {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes nodeReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  to {
+    opacity: 0.58;
+    transform: scale(1);
+  }
+}
+
+@keyframes dataDotReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  to {
+    opacity: 0.38;
+    transform: scale(1);
+  }
+}
+
+@keyframes terminalReveal {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes annotationReveal {
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes cursorBlink {
+  0%,
+  48% {
+    opacity: 1;
+  }
+
+  49%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes flowFieldBreath {
+  from {
+    opacity: 0.96;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0.84;
+    transform: translate3d(1.5px, 0, 0);
+  }
+}
+
+@keyframes nodeFieldDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, -1.5px, 0);
+  }
+}
+
+@media (max-width: 1180px) {
+  .visualPosition {
+    right: var(--margin-desktop);
+    width: min(38vw, 500px);
+  }
+
+  .techLabel {
+    font-size: 0.5rem;
+  }
+
+  .terminalAnchor {
+    width: 74px;
+  }
+}
+
+@media (max-width: 900px) and (min-width: 769px) {
+  .visualPosition {
+    right: 3vw;
+    width: 40vw;
+    opacity: 0.8;
+  }
+
+  .secondaryPath,
+  .secondaryNode,
+  .labelVoice,
+  .labelData {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .visualPosition {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(100%, 520px);
+    margin: 38px auto 18px;
+    transform: none;
+    flex: 0 0 auto;
+    z-index: 1;
+  }
+
+  .secondaryPath,
+  .secondaryNode,
+  .secondaryGrid,
+  .labelVoice,
+  .labelData {
+    display: none;
+  }
+
+  .techLabel {
+    font-size: 0.5rem;
+  }
+
+  .terminalAnchor {
+    width: 76px;
+  }
+}
+
+@media (max-width: 480px) {
+  .visualPosition {
+    width: calc(100vw - 24px);
+    margin-left: -4px;
+  }
+
+  .labelRealtime,
+  .labelAi {
+    display: none;
+  }
+
+  .terminalAnchor {
+    width: 72px;
+  }
+
+  .terminal {
+    min-height: 62px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visualMotion,
+  .diagramParallax,
+  .terminalParallax,
+  .flowPaths,
+  .systemNodes,
+  .gridLines,
+  .flowPath,
+  .systemNode,
+  .dataDot,
+  .techLabel,
+  .marker,
+  .terminal,
+  .terminalCorner,
+  .cursor {
+    animation: none;
+  }
+
+  .heroOrbit {
+    animation: none;
+    stroke-dashoffset: 0;
+    transform: rotate(-90deg);
+  }
+
+  .orbitProjectMarker {
+    animation: none;
+    opacity: 1;
+  }
+
+  .gridLines,
+  .techLabel,
+  .marker,
+  .terminal,
+  .terminalCorner {
+    opacity: 1;
+    transform: none;
+  }
+
+  .flowPath {
+    stroke-dashoffset: 0;
+  }
+
+  .systemNode {
+    opacity: 0.78;
+    transform: scale(1);
+  }
+
+  .dataDot {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+}
