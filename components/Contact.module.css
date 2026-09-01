@@ -1,4 +1,6 @@
 .section {
+  position: relative;
+  isolation: isolate;
   background-color: var(--bg-dark);
   color: var(--text-white);
   min-height: 100vh;
@@ -8,6 +10,55 @@
   place-items: center;
   overflow: hidden;
   text-align: center;
+}
+
+.technicalField {
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  position: absolute;
+  inset: -24px 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.dotMotion {
+  position: absolute;
+  inset: 0;
+  display: block;
+  animation: orderedDotsDrift 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.dotLayer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  -webkit-mask-image: radial-gradient(ellipse at center, transparent 0%, transparent 30%, #000 78%);
+  mask-image: radial-gradient(ellipse at center, transparent 0%, transparent 30%, #000 78%);
+  will-change: opacity;
+}
+
+.baseDots {
+  background-image: radial-gradient(circle, rgba(250, 250, 250, 0.38) 0.8px, transparent 1.1px);
+  background-size: 34px 34px;
+  opacity: 0.6;
+}
+
+.hoverDots {
+  background-image: radial-gradient(circle, rgba(250, 250, 250, 0.95) 1.25px, transparent 1.6px);
+  background-size: 34px 34px;
+  opacity: 0;
+  transition: opacity 0.38s ease;
+  -webkit-mask-image: radial-gradient(circle 205px at var(--pointer-x) var(--pointer-y), #000 0%, rgba(0, 0, 0, 0.82) 38%, transparent 78%);
+  mask-image: radial-gradient(circle 205px at var(--pointer-x) var(--pointer-y), #000 0%, rgba(0, 0, 0, 0.82) 38%, transparent 78%);
+}
+
+@keyframes orderedDotsDrift {
+  to {
+    transform: translate3d(7px, -9px, 0);
+  }
 }
 
 .container {
@@ -33,9 +84,19 @@
   margin-bottom: 48px;
 }
 
+.ctaWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  will-change: transform, opacity;
+}
+
 .cta {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 16px 40px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   font-family: var(--font-display);
@@ -45,14 +106,21 @@
   text-transform: uppercase;
   color: var(--text-white);
   text-decoration: none;
+  background-color: transparent;
+  cursor: pointer;
   transform: translate3d(0, 0, 0);
   transition:
     transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.32s ease,
-    border-color 0.32s ease;
+    border-color 0.32s ease,
+    color 0.32s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .section:hover .hoverDots {
+    opacity: 0.78;
+  }
+
   .cta:hover {
     transform: translate3d(0, -2px, 0);
     background-color: rgba(255, 255, 255, 0.1);
@@ -64,6 +132,314 @@
   transform: translate3d(0, 0, 0);
 }
 
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 10, 10, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  z-index: 1;
+  animation: backdropIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.modalClosing .modalBackdrop {
+  animation: backdropOut 0.24s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+.modalContent {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  background-color: #161616;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 32px;
+  text-align: left;
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.85);
+  z-index: 2;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  animation: contentIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.modalClosing .modalContent {
+  animation: contentOut 0.24s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+.modalContent::-webkit-scrollbar {
+  width: 4px;
+}
+
+.modalContent::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes backdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes backdropOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes contentIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes contentOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.modalTitleBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.modalTag {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.modalTitle {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-white);
+  margin: 0;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+
+.closeBtn:hover {
+  color: var(--text-white);
+}
+
+.recipientBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  padding: 10px 14px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 24px;
+}
+
+.recipientLabel {
+  color: var(--text-secondary);
+}
+
+.recipientValue {
+  color: var(--text-white);
+  font-weight: 600;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.fieldLabel {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.fieldInput,
+.fieldTextarea {
+  background-color: #121212;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-white);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  padding: 12px 14px;
+  outline: none;
+  border-radius: 0;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.fieldInput:focus,
+.fieldTextarea:focus {
+  border-color: rgba(255, 255, 255, 0.75);
+  background-color: #151515;
+}
+
+.fieldTextarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.errorBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background-color: rgba(255, 80, 80, 0.08);
+  border: 1px solid rgba(255, 80, 80, 0.25);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 120, 120, 0.95);
+  margin-bottom: 4px;
+}
+
+.errorDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(255, 80, 80, 0.9);
+  flex-shrink: 0;
+}
+
+.modalActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submitBtn {
+  flex: 1;
+  min-width: 160px;
+  padding: 14px 24px;
+  background-color: var(--text-white);
+  color: #121212;
+  border: 1px solid var(--text-white);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.submitBtn:hover {
+  background-color: transparent;
+  color: var(--text-white);
+}
+
+.secondaryBtn {
+  padding: 14px 20px;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--text-white);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.secondaryBtn:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.successState {
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.successBadge {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-white);
+  margin-bottom: 16px;
+}
+
+.successText {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
 @media (max-width: 768px) {
   .section {
     padding: calc(var(--nav-height) + 32px) 0 64px;
@@ -72,12 +448,35 @@
   .container {
     padding: 0 var(--margin-mobile);
   }
+
+  .hoverDots {
+    display: none;
+  }
+
+  .modalContent {
+    padding: 24px 20px;
+  }
+
+  .modalActions {
+    flex-direction: column;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .dotMotion {
+    animation: none;
+  }
+
   .cta,
   .cta:hover,
   .cta:active {
     transform: none;
+  }
+
+  .modalBackdrop,
+  .modalClosing .modalBackdrop,
+  .modalContent,
+  .modalClosing .modalContent {
+    animation: none;
   }
 }

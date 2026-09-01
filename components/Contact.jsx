@@ -1,8 +1,11 @@
 import styles from './Contact.module.css';
+import ContactDotField from './ContactDotField';
+import ContactAction from './ContactAction';
 
 export default function Contact() {
   return (
     <section className={styles.section} id="contact">
+      <ContactDotField />
       <div className={styles.container} data-scroll-content>
         <h2 className={styles.title} data-contact-heading>
           LET&apos;S BUILD
@@ -11,14 +14,7 @@ export default function Contact() {
           <br />
           INTELLIGENT.
         </h2>
-        <a
-          href="mailto:hafizmuhammed1019@gmail.com"
-          className={styles.cta}
-          data-contact-action
-          aria-label="Email Hafis Muhammed"
-        >
-          INITIATE PROTOCOL
-        </a>
+        <ContactAction />
       </div>
     </section>
   );

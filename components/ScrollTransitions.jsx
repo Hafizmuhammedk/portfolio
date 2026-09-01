@@ -97,17 +97,25 @@ export default function ScrollTransitions() {
 
           if (contact) {
             const contactContent = selectContent(contact);
+            const contactField = contact.querySelector('[data-contact-field]');
             const contactTimeline = gsap.timeline({
               defaults: { ease: 'none' },
               scrollTrigger: {
                 trigger: contact,
                 start: 'top 92%',
-                end: 'top 32%',
+                endTrigger: footer || contact,
+                end: 'bottom bottom',
                 scrub: true,
                 invalidateOnRefresh: true,
               },
             });
             contactTimeline.to(selectContent(blueprint), { y: -28, opacity: 0.5 }, 0);
+            contactTimeline.fromTo(
+              contactField,
+              { y: 14, scale: 1.015, opacity: 0.55 },
+              { y: -8, scale: 1, opacity: 1 },
+              0,
+            );
             contactTimeline.fromTo(
               contactContent,
               { scale: 0.88 },
@@ -131,11 +139,9 @@ export default function ScrollTransitions() {
           addTransition({
             trigger: footer,
             incoming: footer?.querySelector('[data-footer-content]'),
-            outgoing: selectContent(contact),
             from: { x: 0, y: 20, opacity: 0.72 },
-            out: { x: 0, y: -14, opacity: 0.64 },
             start: 'top 96%',
-            end: 'top 72%',
+            end: 'bottom bottom',
           });
         });
 
