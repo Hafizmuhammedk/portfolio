@@ -22,10 +22,6 @@ export default function Hero() {
 
         <HeroTechnicalVisual />
 
-        <a className={styles.cornerControl} href="#work" aria-label="Explore selected work">
-          N
-        </a>
-
         <div className={styles.bottom} data-hero-bottom>
           <div className={styles.scroll}>
             <span className={styles.arrow} aria-hidden="true">↓</span>
