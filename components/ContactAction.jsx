@@ -221,7 +221,7 @@ export default function ContactAction() {
         className={styles.cta}
         aria-label="Initiate mail transmission protocol"
       >
-        <span>INITIATE PROTOCOL</span>
+        <span>CONNECT</span>
       </button>
 
       {isOpen && mounted && createPortal(modalElement, document.body)}
