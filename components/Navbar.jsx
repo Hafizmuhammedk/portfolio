@@ -3,7 +3,6 @@ import styles from './Navbar.module.css';
 const NAV_LINKS = [
   { label: 'WORK', href: '#work' },
   { label: 'ABOUT', href: '#about' },
-  { label: 'EXPERIENCE', href: '#experience' },
   { label: 'CONTACT', href: '#contact' },
 ];
 
