@@ -23,6 +23,15 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
+          <a
+            href="/hafiz-muhammed-cv.pdf"
+            className={styles.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View CV (PDF, opens in a new tab)"
+          >
+            CV
+          </a>
         </div>
       </div>
     </nav>
